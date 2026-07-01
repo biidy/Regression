@@ -19,7 +19,7 @@ env/
 Thumbs.db
 
 # Données brutes (trop lourdes pour GitHub)
-data/
+
 
 # Modèles locaux (générés automatiquement par CI/CD)
 models/
