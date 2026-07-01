@@ -1,0 +1,18 @@
+# Data
+pandas
+numpy
+
+# Machine Learning
+scikit-learn
+xgboost
+lightgbm
+catboost
+
+# Sauvegarde modèle
+joblib
+
+# Interface utilisateur
+gradio
+
+# Tests
+pytest

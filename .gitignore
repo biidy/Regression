@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+env/
+
+# Jupyter (EDA reste en local)
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Données brutes (trop lourdes pour GitHub)
+data/
+
+# Modèles locaux (générés automatiquement par CI/CD)
+models/
