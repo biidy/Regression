@@ -16,7 +16,7 @@ from catboost import CatBoostRegressor
 
 # Notre preprocessing
 import sys
-sys.path.append("source")
+sys.path.append("src")
 from preprocess import load_and_prepare
 
 def evaluate(name, model, X_test, y_test):
