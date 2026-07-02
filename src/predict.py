@@ -24,12 +24,19 @@ def predict(tv, radio, newspaper):
         data = json.load(f)
     model_name = data["best_model"]
 
-    # 3. Préparer les features
-    #    Note : pas besoin de scaling car le meilleur modèle
-    #    est CatBoost (arbre) — pas sensible à l'échelle
-    features = np.array([[tv, radio, newspaper]])
+    # 3. Charger les noms de colonnes ← NOUVEAU
+    with open("models/feature_names.json") as f:
+        feature_names = json.load(f)
 
-    # 4. Prédiction
+    # 4. Créer un DataFrame avec les bons noms de colonnes ← NOUVEAU
+    #    Les valeurs sont dans le même ordre que lors de l'entraînement
+    features = pd.DataFrame(
+        [[tv, radio, newspaper]],
+        columns=feature_names        # ← noms exacts utilisés à l'entraînement
+    )
+
+
+    # 5. Prédiction
     prediction = model.predict(features)
 
     return float(prediction[0]), model_name

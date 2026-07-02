@@ -37,19 +37,26 @@ def load_and_prepare(filepath):
     # 4. Nettoyage des noms de colonnes (pour LightGBM)
     X.columns = [re.sub(r"[^A-Za-z0-9_]+", "_", str(col)) for col in X.columns]
     print(f"✅ Features : {X.columns.tolist()}")
+    
+    # 5. Sauvegarder les noms de colonnes ← NOUVEAU
+    os.makedirs("models", exist_ok=True)
+    feature_names = X.columns.tolist()
+    with open("models/feature_names.json", "w") as f:
+        json.dump(feature_names, f)
+    print(f"✅ Noms de colonnes sauvegardés : {feature_names}")
 
-    # 5. Split train/test AVANT le scaling
+    # 6. Split train/test AVANT le scaling
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
     print(f"✅ Split : {X_train.shape[0]} train / {X_test.shape[0]} test")
 
-    # 6. Scaling pour les modèles linéaires
+    # 7. Scaling pour les modèles linéaires
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled  = scaler.transform(X_test)
 
-    # 7. Sauvegarde du scaler
+    # 8. Sauvegarde du scaler
     os.makedirs("models", exist_ok=True)
     joblib.dump(scaler, "models/scaler.pkl")
     print("✅ Scaler sauvegardé : models/scaler.pkl")

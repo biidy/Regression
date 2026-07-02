@@ -18,7 +18,17 @@ all_results  = all_data["results"]
 # ── Fonctions ───────────────────────────────────────────────────
 def predict_sales(tv, radio, newspaper):
     """Prédit les ventes à partir des budgets publicitaires"""
-    features   = np.array([[tv, radio, newspaper]])
+
+    # Charger les noms de colonnes
+    with open("models/feature_names.json") as f:
+        feature_names = json.load(f)
+
+    # Créer DataFrame avec les bons noms de colonnes
+    features = pd.DataFrame(
+        [[tv, radio, newspaper]],
+        columns=feature_names
+    )
+
     prediction = model.predict(features)[0]
 
     return (
@@ -28,7 +38,6 @@ def predict_sales(tv, radio, newspaper):
         f"RMSE : {best_metrics['RMSE']:.4f} | "
         f"MAE : {best_metrics['MAE']:.4f}"
     )
-
 def get_comparison_table():
     """Retourne le tableau comparatif de tous les modèles"""
     df = pd.DataFrame(all_results)
