@@ -41,8 +41,8 @@ jobs:
       # ── 6. ENTRAINEMENT de tous les modèles ───────────────────
       - name: Train & compare all models
         run: |
-          echo "🚀 Lancement de l'entraînement..."
-          python source/train.py
+          echo "Lancement de l'entraînement..."
+          python src/train.py
 
       # ── 7. TESTS APRES LANCEMENT (teste les résultats) ────────
       - name: Run post-launch tests
