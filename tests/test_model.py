@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 # Accès aux fichiers source
-sys.path.append("source")
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 # ── Tests Preprocessing ─────────────────────────────────────────
 class TestPreprocessing:
