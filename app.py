@@ -38,6 +38,7 @@ def predict_sales(tv, radio, newspaper):
         f"RMSE : {best_metrics['RMSE']:.4f} | "
         f"MAE : {best_metrics['MAE']:.4f}"
     )
+
 def get_comparison_table():
     """Retourne le tableau comparatif de tous les modèles"""
     df = pd.DataFrame(all_results)
