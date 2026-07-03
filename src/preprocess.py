@@ -1,64 +1,58 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 import re
+import json
 import joblib
 import os
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+
 
 def load_and_prepare(filepath):
-    """
-    Charge le dataset et prépare les données pour l'entraînement.
-    Retourne : X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test
-    """
-
-    # 1. Chargement
+    #1 chargement de data
     data = pd.read_csv(filepath)
-    print(f"✅ Dataset chargé : {data.shape[0]} lignes, {data.shape[1]} colonnes")
+    print(f"dataset charge:{data.shape[0]} lignes et {data.shape[1]} colonnes")
 
-    # 2. Vérifications basiques
-    if data.isnull().sum().sum() > 0:
-        print("⚠️  Valeurs manquantes détectées — imputation par médiane")
-        data = data.fillna(data.median(numeric_only=True))
+    #2 verification basique
+    if data.isnull().sum()>0:
+        print("valeurs manquantes detectees")
+
     else:
-        print("✅ Aucune valeur manquante")
+        print("Aucune valeur manquantes")
 
     if data.duplicated().sum() > 0:
-        print(f"⚠️  {data.duplicated().sum()} doublons supprimés")
-        data = data.drop_duplicates()
+        print("il y a des doublons dans le dataset")
     else:
-        print("✅ Aucun doublon")
+        print("aucune doublons")
 
-    # 3. Séparation X et y
-    target_col = "Sales ($)"
-    X = data.drop(columns=[target_col])
-    y = data[target_col]
+    #3.separation des donnees 
+    x= data.drop(columns=["Sales ($)"])
+    y= data["Sales ($)"]
 
-    # 4. Nettoyage des noms de colonnes (pour LightGBM)
-    X.columns = [re.sub(r"[^A-Za-z0-9_]+", "_", str(col)) for col in X.columns]
-    print(f"✅ Features : {X.columns.tolist()}")
-    
-    # 5. Sauvegarder les noms de colonnes ← NOUVEAU
+    #4 netoyage des colonnes pour eviter l'erreur durant l'entrainement de lightgbm
+    x.columns = [re.sub(r"[^A-Za-z0-9_]+", "_", str(col)) for col in x.columns]
+    print(f"features:{x.columns.tolist()}")
+
+    #5 sauvegarde des noms de colonnes 
     os.makedirs("models", exist_ok=True)
-    feature_names = X.columns.tolist()
-    with open("models/feature_names.json", "w") as f:
+    feature_names = x.columns.tolist()
+    with open ("models/feature_name.json", w) as f:
         json.dump(feature_names, f)
-    print(f"✅ Noms de colonnes sauvegardés : {feature_names}")
+    print(f"les noms des colonnes sauvegardes:{feature_names}")
 
-    # 6. Split train/test AVANT le scaling
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-    print(f"✅ Split : {X_train.shape[0]} train / {X_test.shape[0]} test")
+    #6 split train/ test avant scaling
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+    print(f"split : {x_train.shape[0]} train / {x_test.shape[0]} test")
 
-    # 7. Scaling pour les modèles linéaires
+    #7 standardisastion pour les modele lineaire
     scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled  = scaler.transform(X_test)
+    x_train_scaled = scaler.fit_transform(x_train)
+    x_test_scaled = scaler.transform(x_test)#pas de fit
 
-    # 8. Sauvegarde du scaler
+    #8 sauvegarde du standardisation
     os.makedirs("models", exist_ok=True)
     joblib.dump(scaler, "models/scaler.pkl")
-    print("✅ Scaler sauvegardé : models/scaler.pkl")
+    print("scaler sauvegarder")
 
-    return X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test
+    return x_train, x_test, x_train_scaled, x_test_scaled, y_train, y_test
+    
