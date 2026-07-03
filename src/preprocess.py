@@ -14,16 +14,12 @@ def load_and_prepare(filepath):
     print(f"dataset charge:{data.shape[0]} lignes et {data.shape[1]} colonnes")
 
     #2 verification basique
-    if data.isnull().sum()>0:
+    if data.isnull().sum().sum()>0:
         print("valeurs manquantes detectees")
 
     else:
         print("Aucune valeur manquantes")
 
-    if data.duplicated().sum() > 0:
-        print("il y a des doublons dans le dataset")
-    else:
-        print("aucune doublons")
 
     #3.separation des donnees 
     x= data.drop(columns=["Sales ($)"])
