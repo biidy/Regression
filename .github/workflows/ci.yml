@@ -29,14 +29,14 @@ jobs:
       - name: Create directories
         run: mkdir -p models
 
-      # ── 5. TESTS AVANT LANCEMENT (teste le code) ──────────────
-      '''- name: Run pre-launch tests
-        run: |
-          echo " Tests du code AVANT entraînement..."
-          pytest tests/test_preprocess.py -v
-          pytest tests/test_train.py -v
-          pytest tests/test_predict.py -v
-          echo " Tous les tests pre-launch passés" '''
+      # ── 5. TESTS AVANT LANCEMENT (désactivé temporairement) ───
+      #- name: Run pre-launch tests
+      #  run: |
+      #    echo "Tests du code AVANT entraînement..."
+      #    pytest tests/test_preprocess.py -v
+      #    pytest tests/test_train.py -v
+      #    pytest tests/test_predict.py -v
+      #    echo "Tous les tests pre-launch passés"
 
       # ── 6. ENTRAINEMENT de tous les modèles ───────────────────
       - name: Train & compare all models
@@ -44,12 +44,12 @@ jobs:
           echo "Lancement de l'entraînement..."
           python src/train.py
 
-      # ── 7. TESTS APRES LANCEMENT (teste les résultats) ────────
-      '''- name: Run post-launch tests
-        run: |
-          echo " Tests des résultats APRES entraînement..."
-          pytest tests/test_model.py -v
-          echo " Tous les tests post-launch passés" '''
+      # ── 7. TESTS APRES LANCEMENT (désactivé temporairement) ───
+      #- name: Run post-launch tests
+      #  run: |
+      #    echo "Tests des résultats APRES entraînement..."
+      #    pytest tests/test_model.py -v
+      #    echo "Tous les tests post-launch passés"
 
       # ── 8. Afficher le meilleur modèle ────────────────────────
       - name: Show best model
