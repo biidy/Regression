@@ -32,7 +32,7 @@ def load_and_prepare(filepath):
     #5 sauvegarde des noms de colonnes 
     os.makedirs("models", exist_ok=True)
     feature_names = x.columns.tolist()
-    with open ("models/feature_name.json", w) as f:
+    with open ("models/feature_name.json", "w") as f:
         json.dump(feature_names, f)
     print(f"les noms des colonnes sauvegardes:{feature_names}")
 
