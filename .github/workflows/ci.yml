@@ -65,7 +65,7 @@ jobs:
           # 1. Uploader les fichiers du projet
           api.upload_folder(
               folder_path='.',
-              repo_id='votre-username/advertising-regression',
+              repo_id='advertising-predict-pro/advertising-regression',
               repo_type='space',
               token='$HF_TOKEN',
               ignore_patterns=[
@@ -83,7 +83,7 @@ jobs:
 
           # 2. Vérifier que models/ a bien été uploadé
           files = api.list_repo_files(
-              repo_id='votre-username/advertising-regression',
+              repo_id='advertising-predict-pro/advertising-regression',
               repo_type='space',
               token='$HF_TOKEN'
           )
