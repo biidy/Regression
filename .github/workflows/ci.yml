@@ -11,47 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ── 1. Récupérer le code ──────────────────────────────────
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # ── 2. Installer Python ───────────────────────────────────
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      # ── 3. Installer les dépendances ──────────────────────────
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── 4. Créer les dossiers nécessaires ─────────────────────
       - name: Create directories
         run: mkdir -p models
 
-      # ── 5. TESTS AVANT LANCEMENT (désactivé temporairement) ───
-      #- name: Run pre-launch tests
-      #  run: |
-      #    echo "Tests du code AVANT entraînement..."
-      #    pytest tests/test_preprocess.py -v
-      #    pytest tests/test_train.py -v
-      #    pytest tests/test_predict.py -v
-      #    echo "Tous les tests pre-launch passés"
-
-      # ── 6. ENTRAINEMENT de tous les modèles ───────────────────
       - name: Train & compare all models
         run: |
           echo "Lancement de l'entraînement..."
           python src/train.py
 
-      # ── 7. TESTS APRES LANCEMENT (désactivé temporairement) ───
-      #- name: Run post-launch tests
-      #  run: |
-      #    echo "Tests des résultats APRES entraînement..."
-      #    pytest tests/test_model.py -v
-      #    echo "Tous les tests post-launch passés"
-
-      # ── 8. Afficher le meilleur modèle ────────────────────────
       - name: Show best model
         run: |
           python -c "
@@ -66,22 +44,54 @@ jobs:
           print('=' * 50)
           "
 
-      # ── 9. DEPLOIEMENT HuggingFace (seulement sur main) ───────
+      # ── Vérifier que les fichiers models existent ──────────────
+      - name: Verify model files
+        run: |
+          echo "Vérification des fichiers générés..."
+          ls -la models/
+          echo "✅ Fichiers models présents"
+
       - name: Deploy to HuggingFace
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          pip install huggingface_hub
           python -c "
           from huggingface_hub import HfApi
+          import os
+
           api = HfApi()
+
+          # 1. Uploader les fichiers du projet
           api.upload_folder(
               folder_path='.',
-              repo_id='advertising-predict-pro/advertising-regression',
+              repo_id='votre-username/advertising-regression',
               repo_type='space',
               token='$HF_TOKEN',
-              ignore_patterns=['data/', '.git/', '__pycache__/']
+              ignore_patterns=[
+                  'data/',
+                  '.git/',
+                  '__pycache__/',
+                  '*.pyc',
+                  '.gitignore',
+                  'tests/',
+                  'pipeline/'
+              ]
+              # models/ N'EST PAS dans ignore_patterns → sera uploadé ✅
           )
-          print('Déploiement HuggingFace réussi')
+          print('✅ Projet uploadé')
+
+          # 2. Vérifier que models/ a bien été uploadé
+          files = api.list_repo_files(
+              repo_id='votre-username/advertising-regression',
+              repo_type='space',
+              token='$HF_TOKEN'
+          )
+          model_files = [f for f in files if 'models/' in f]
+          print(f'✅ Fichiers models sur HuggingFace : {model_files}')
+
+          if not model_files:
+              raise Exception('❌ models/ non uploadé sur HuggingFace !')
+
+          print('Déploiement complet réussi !')
           "
